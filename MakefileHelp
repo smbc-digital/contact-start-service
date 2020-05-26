@@ -1,0 +1,19 @@
+Project automation targets:
+   coverage: Run service units tests
+
+   pipeline: Creates project pipeline
+      The pipeline command requires 5 values, They are as follows:
+      --SSH Url: The ssh url for the github repoitory (e.g. git@github.com:smbc-digital/form-builder.git)
+      --Project Name: The Project name is what is displayed within Teamcity Projects
+      --Project Id: The TeamCity Id for the project, this must not include any special characters
+      --Project Dll name: The Build dll name, this can be taken from the bin/publish directory after a dotnet publish/build command has been run. The .dll extension is not required to be specified. e.g.( test_project)
+      --Inthub sub app key: The Subapp key of where the app is hosted within inthub. (e.g. FormBuilder)
+
+      --Requirments:
+         --Environment variables: 
+            TCUsername (Teamcity username)
+            TCPassword (Teamcity password)
+      --project
+         --internal-provisioning
+
+   setup: Setup base service project
