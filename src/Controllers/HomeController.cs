@@ -1,6 +1,8 @@
+using contact_start_service.Models;
+using contact_start_service.Services;
 using Microsoft.AspNetCore.Mvc;
 using StockportGovUK.AspNetCore.Attributes.TokenAuthentication;
-using StockportGovUK.AspNetCore.Availability.Managers;
+using System.Threading.Tasks;
 
 namespace contact_start_service.Controllers
 {
@@ -10,23 +12,16 @@ namespace contact_start_service.Controllers
     [TokenAuthentication]
     public class HomeController : ControllerBase
     {
-        private IAvailabilityManager _availabilityManager;
-        
-        public HomeController(IAvailabilityManager availabilityManager)
+        private IContactSTARTService contactSTARTService;
+        public HomeController(IContactSTARTService _contactSTARTService)
         {
-            _availabilityManager = availabilityManager;
-        }
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok();
+            contactSTARTService = _contactSTARTService;
         }
 
         [HttpPost]
-        public IActionResult Post()
+        public async Task<IActionResult> Post(ContactSTARTRequest model)
         {
-            return Ok();
+            return Ok(await contactSTARTService.CreateCase(model));
         }
     }
 }
