@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockportGovUK.NetStandard.Models.Addresses;
+using System;
 
 namespace contact_start_service.Models
 {
@@ -27,7 +28,7 @@ namespace contact_start_service.Models
         public string PhoneNumber { get; set; }
         public string EmailAddress { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public TimeSpan TimeSlot { get; set; }
-        public object Address { get; set;  }
+        public string TimeSlot { get; set; } // radio button
+        public Address Address { get; set;  }
     }
 }

@@ -11,6 +11,10 @@ using StockportGovUK.AspNetCore.Middleware;
 using StockportGovUK.AspNetCore.Availability;
 using StockportGovUK.AspNetCore.Availability.Middleware;
 using StockportGovUK.NetStandard.Gateways;
+using contact_start_service.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
+using contact_start_service.Config;
 
 namespace contact_start_service
 {
@@ -26,14 +30,23 @@ namespace contact_start_service
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                    .AddNewtonsoftJson();
             services.AddStorageProvider(Configuration);
             services.AddResilientHttpClients<IGateway, Gateway>(Configuration);
+            services.Configure<VerintConfiguration>(settings => Configuration.GetSection("VerintConfiguration").Bind(settings));
+            services.AddSingleton<IContactSTARTService, ContactSTARTService>();
             services.AddAvailability();
             services.AddSwagger();
             services.AddHealthChecks()
                     .AddCheck<TestHealthCheck>("TestHealthCheck");
+
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddMvcOptions(_ => _.AllowEmptyInputInBodyModelBinding = true)
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.Culture = new CultureInfo("en-GB");
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
