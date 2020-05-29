@@ -112,7 +112,7 @@ namespace contact_start_service_tests.Services
                 await _service.CreateCase(request);
             });
 
-            Assert.Equal("Classification EventCode not found", result.Message);
+            Assert.Equal("ContactSTARTService.CreateCase: EventCode not found", result.Message);
         }
 
         [Fact]

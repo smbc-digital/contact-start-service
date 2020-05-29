@@ -26,7 +26,7 @@ namespace contact_start_service.Services
         public async Task<string> CreateCase(ContactSTARTRequest request)
         {
             if (!verintConfiguration.ClassificationMap.TryGetValue(request.AreaOfConcern.Trim(), out var eventCode))
-                throw new Exception("Classification EventCode not found");
+                throw new Exception("ContactSTARTService.CreateCase: EventCode not found");
 
             var response = await verintServiceGateway.CreateCase(request.MapToCase(eventCode));
 

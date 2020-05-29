@@ -14,7 +14,7 @@ namespace contact_start_service.Models
     }
     public class RefererPerson
     {
-        public string Permissions { get; set; } // should* allways be 'yes'
+        public string Permissions { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
@@ -28,7 +28,7 @@ namespace contact_start_service.Models
         public string PhoneNumber { get; set; }
         public string EmailAddress { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public string TimeSlot { get; set; } // radio button
+        public string TimeSlot { get; set; }
         public Address Address { get; set;  }
     }
 }
