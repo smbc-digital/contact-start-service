@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30104.148
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "contact-start-service", "src\contact-start-service.csproj", "{DB337552-CA3E-4C4C-B8E0-C9BA21CF7994}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "contact-start-service-tests", "tests\contact-start-service-tests.csproj", "{050799A6-85FF-45D0-82A1-6A3621B41D2D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB337552-CA3E-4C4C-B8E0-C9BA21CF7994}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB337552-CA3E-4C4C-B8E0-C9BA21CF7994}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB337552-CA3E-4C4C-B8E0-C9BA21CF7994}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB337552-CA3E-4C4C-B8E0-C9BA21CF7994}.Release|Any CPU.Build.0 = Release|Any CPU
+		{050799A6-85FF-45D0-82A1-6A3621B41D2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{050799A6-85FF-45D0-82A1-6A3621B41D2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{050799A6-85FF-45D0-82A1-6A3621B41D2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{050799A6-85FF-45D0-82A1-6A3621B41D2D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F83E0D81-0607-4629-8F5E-89DF34E2E43A}
+	EndGlobalSection
+EndGlobal
