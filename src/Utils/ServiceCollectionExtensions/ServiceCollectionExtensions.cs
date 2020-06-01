@@ -10,7 +10,7 @@ namespace contact_start_service.Utils.ServiceCollectionExtensions
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "contact_start_service API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Contact START Service API", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",

@@ -71,7 +71,7 @@ namespace contact_start_service
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("v1/swagger.json", "contact_start_service API");
+                c.SwaggerEndpoint("v1/swagger.json", "Contact START Service API");
             });
         }
     }
