@@ -3,7 +3,6 @@ using contact_start_service.Extensions;
 using contact_start_service.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using StockportGovUk.NetStandard.Models.ParkingEnforcement;
 using StockportGovUK.NetStandard.Gateways.MailingServiceGateway;
 using StockportGovUK.NetStandard.Gateways.VerintServiceGateway;
 using StockportGovUK.NetStandard.Models.Enums;
@@ -13,11 +12,6 @@ using System.Threading.Tasks;
 
 namespace contact_start_service.Services
 {
-    public interface IContactSTARTService
-    {
-        Task<string> CreateCase(ContactSTARTRequest request);
-    }
-
     public class ContactSTARTService : IContactSTARTService
     {
         private readonly IVerintServiceGateway verintServiceGateway;
