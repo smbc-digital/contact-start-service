@@ -32,10 +32,11 @@ namespace contact_start_service
         {
             services.AddStorageProvider(Configuration);
             services.AddResilientHttpClients<IGateway, Gateway>(Configuration);
-            services.Configure<VerintConfiguration>(settings => Configuration.GetSection("VerintConfiguration").Bind(settings));
-            services.AddSingleton<IContactSTARTService, ContactSTARTService>();
+            services.AddConfiguration(Configuration);
+            services.AddServices();
             services.AddAvailability();
             services.AddSwagger();
+
             services.AddHealthChecks()
                     .AddCheck<TestHealthCheck>("TestHealthCheck");
 
