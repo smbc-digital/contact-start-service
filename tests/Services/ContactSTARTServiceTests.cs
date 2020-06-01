@@ -3,8 +3,11 @@ using contact_start_service.Models;
 using contact_start_service.Services;
 using Microsoft.Extensions.Options;
 using Moq;
+using StockportGovUK.NetStandard.Gateways.MailingServiceGateway;
 using StockportGovUK.NetStandard.Gateways.Response;
 using StockportGovUK.NetStandard.Gateways.VerintServiceGateway;
+using StockportGovUK.NetStandard.Models.Enums;
+using StockportGovUK.NetStandard.Models.Mail;
 using StockportGovUK.NetStandard.Models.Verint;
 using System;
 using System.Collections.Generic;
@@ -19,6 +22,7 @@ namespace contact_start_service_tests.Services
     {
         private readonly ContactSTARTService _service;
         private Mock<IVerintServiceGateway> _mockVerintService = new Mock<IVerintServiceGateway>();
+        private Mock<IMailingServiceGateway> _mockMailingService = new Mock<IMailingServiceGateway>();
 
         public ContactSTARTServiceTests()
         {
@@ -41,7 +45,7 @@ namespace contact_start_service_tests.Services
                 }
                 });
 
-            _service = new ContactSTARTService(_mockVerintService.Object, mockVerintConfiguration.Object);
+            _service = new ContactSTARTService(_mockVerintService.Object, _mockMailingService.Object, mockVerintConfiguration.Object);
         }
 
         [Fact]
@@ -121,6 +125,7 @@ namespace contact_start_service_tests.Services
             // reporting self - no referer
             var request = new ContactSTARTRequest
             {
+                AboutYourSelfRadio = "no",
                 AreaOfConcern = "Alcohol",
                 RefereePerson = new RefereePerson
                 {
@@ -178,6 +183,7 @@ namespace contact_start_service_tests.Services
             // reporting self - no referer
             var request = new ContactSTARTRequest
             {
+                AboutYourSelfRadio = "no",
                 AreaOfConcern = "Alcohol",
                 RefereePerson = new RefereePerson
                 {
@@ -254,6 +260,7 @@ namespace contact_start_service_tests.Services
             // reporting other person - has referer
             var request = new ContactSTARTRequest
             {
+                AboutYourSelfRadio = "no",
                 AreaOfConcern = "Alcohol",
                 RefereePerson = new RefereePerson
                 {
@@ -287,6 +294,7 @@ namespace contact_start_service_tests.Services
             // reporting other person - has referer
             var request = new ContactSTARTRequest
             {
+                AboutYourSelfRadio = "no",
                 AreaOfConcern = "Alcohol",
                 RefereePerson = new RefereePerson
                 {
@@ -350,8 +358,81 @@ namespace contact_start_service_tests.Services
             Assert.Equal($"ContactSTARTService.CreateCase: the status code {HttpStatusCode.BadRequest} indicates something has gone wrong when attempting to create a case within verint-service.", result.Message);
         }
 
+        [Fact]
+        public async Task CreateCase_ShouldCallMailingGatewayWithCorrectPayload()
+        {
+            var request = new ContactSTARTRequest
+            {
+                AboutYourSelfRadio = "yes",
+                AreaOfConcern = "Alcohol",
+                RefereePerson = new RefereePerson
+                {
+                    Address = new Address(),
+                    PhoneNumber = "+440000000000",
+                    TimeSlot = "10:00 - 17:00",
+                    EmailAddress = "test@test.com"
+                },
+                MoreInfomation = "test more infomation"
+            };
+
+            var caseRef = "000000000";
+
+            _mockVerintService
+                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
+                .ReturnsAsync(new HttpResponse<string>
+                {
+                    IsSuccessStatusCode = true,
+                    ResponseContent = caseRef
+                });
+
+            Mail mailModel = null;
+
+            _mockMailingService
+                .Setup(_ => _.Send(It.IsAny<Mail>()))
+                .Callback<Mail>(_ => mailModel = _);
+
+            await _service.CreateCase(request);
+
+            _mockMailingService.Verify(_ => _.Send(It.IsAny<Mail>()), Times.Once);
+
+            Assert.Contains(request.RefereePerson.EmailAddress, mailModel.Payload);
+            Assert.Equal(EMailTemplate.ContactStartRequest, mailModel.Template);
+            Assert.Contains(caseRef, mailModel.Payload);
+        }
+
+
+        [Fact]
+        public async Task CreateCase_ShouldNotCallMailingGateway()
+        {
+            var request = new ContactSTARTRequest
+            {
+                AboutYourSelfRadio = "no",
+                AreaOfConcern = "Alcohol",
+                RefereePerson = new RefereePerson
+                {
+                    Address = new Address(),
+                    PhoneNumber = "+440000000000",
+                    TimeSlot = "10:00 - 17:00",
+                    EmailAddress = "test@test.com"
+                },
+                MoreInfomation = "test more infomation"
+            };
+
+            _mockVerintService
+                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
+                .ReturnsAsync(new HttpResponse<string>
+                {
+                    IsSuccessStatusCode = true
+                });
+
+            await _service.CreateCase(request);
+
+            _mockMailingService.VerifyNoOtherCalls();
+        }
+
         private readonly ContactSTARTRequest basicRequest = new ContactSTARTRequest
         {
+            AboutYourSelfRadio = "no",
             AreaOfConcern = "Alcohol",
             RefereePerson = new RefereePerson
             {
