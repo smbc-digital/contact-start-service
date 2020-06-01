@@ -41,7 +41,6 @@ namespace contact_start_service
 
             services
                 .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddMvcOptions(_ => _.AllowEmptyInputInBodyModelBinding = true)
                 .AddNewtonsoftJson(options =>
                 {
