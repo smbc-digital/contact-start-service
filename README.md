@@ -1,18 +1,15 @@
-<h1 align="center">Service name</h1>
+<h1 align="center">Contact START Service</h1>
 
 <div align="center">
-  :neckbeard: :books: :office:
-</div>
-<div align="center">
-  Service tag line
+  :notebook: :books: :office:
 </div>
 
 <br />
 
 <div align="center">
   <img alt="Application version" src="https://img.shields.io/badge/version-1.0.0-brightgreen.svg?style=flat-square" />
-  <img alt="Open Issues" src="https://img.shields.io/github/issues/smbc-digital/{service-name}">
-    <img alt="Stars" src="https://img.shields.io/github/stars/smbc-digital/{service-name}">
+  <img alt="Open Issues" src="https://img.shields.io/github/issues/smbc-digital/contact-start-service">
+    <img alt="Stars" src="https://img.shields.io/github/stars/smbc-digital/contact-start-service">
   <img alt="Stability for application" src="https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square" />
 </div>
 
@@ -32,7 +29,7 @@
 <div align="center">
   <sub>Built with ❤︎ by
   <a href="https://www.stockport.gov.uk">Stockport Council</a> and
-  <a href="">
+  <a href="https://github.com/orgs/smbc-digital/teams">
     contributors
   </a>
 </div>
@@ -44,13 +41,20 @@
 - [License](#license)
 
 ## Requirements
-
+- dotnet core 3.1
+- editor of your choice
+- gpg key added to accepted contributors
 
 ## Installation
-
+```console
+$ git clone git@github.com:smbc-digital/contact-start-service.git
+$ cd contact-start-service/src
+$ git-crypt unlock
+$ dotnet run
+```
 
 ## Server_Integration
-
+[For server integration documentation please go to our internal git](https://git.stockport.gov.uk/devs/dts-documentation/wikis/Verint-Service-Integration)
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
