@@ -212,6 +212,7 @@ namespace contact_start_service_tests.Services
             var request = new ContactSTARTRequest
             {
                 AreaOfConcern = "Alcohol",
+                AboutYourSelfRadio = "no",
                 RefereePerson = new RefereePerson
                 {
                     Address = new Address()
@@ -245,6 +246,74 @@ namespace contact_start_service_tests.Services
             Assert.Contains($"(Lagan) Referer: {request.RefererPerson.FirstName} {request.RefererPerson.LastName}", caseRequest.Description);
             Assert.Contains($"Connection to the Referee: {request.RefererPerson.ConnectionAbout}", caseRequest.Description);
             Assert.Contains($"Contact number: {request.RefererPerson.PhoneNumber}", caseRequest.Description);
+        }
+
+        [Fact]
+        public async Task CreateCase_ShouldCallVerintServiceWithoutTelNumberAndTimeSlot()
+        {
+            // reporting other person - has referer
+            var request = new ContactSTARTRequest
+            {
+                AreaOfConcern = "Alcohol",
+                RefereePerson = new RefereePerson
+                {
+                    Address = new Address()
+                },
+                MoreInfomation = "test more infomation"
+            };
+
+            Case caseRequest = null;
+
+            _mockVerintService
+                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
+                .Callback<Case>(_ => caseRequest = _)
+                .ReturnsAsync(new HttpResponse<string>
+                {
+                    IsSuccessStatusCode = true
+                });
+
+            await _service.CreateCase(request);
+
+            Assert.NotNull(caseRequest);
+            Assert.NotNull(caseRequest.Description);
+
+            Assert.DoesNotContain($"Tel", caseRequest.Description);
+            Assert.DoesNotContain($"Call Time", caseRequest.Description);
+        }
+
+        [Fact]
+        public async Task CreateCase_ShouldCallVerintServiceWithTelNumberAndTimeSlot()
+        {
+            // reporting other person - has referer
+            var request = new ContactSTARTRequest
+            {
+                AreaOfConcern = "Alcohol",
+                RefereePerson = new RefereePerson
+                {
+                    Address = new Address(),
+                    PhoneNumber = "+440000000000",
+                    TimeSlot = "10:00 - 17:00"
+                },
+                MoreInfomation = "test more infomation"
+            };
+
+            Case caseRequest = null;
+
+            _mockVerintService
+                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
+                .Callback<Case>(_ => caseRequest = _)
+                .ReturnsAsync(new HttpResponse<string>
+                {
+                    IsSuccessStatusCode = true
+                });
+
+            await _service.CreateCase(request);
+
+            Assert.NotNull(caseRequest);
+            Assert.NotNull(caseRequest.Description);
+
+            Assert.Contains($"Tel: {request.RefereePerson.PhoneNumber}", caseRequest.Description);
+            Assert.Contains($"Call Time: {request.RefereePerson.TimeSlot}", caseRequest.Description);
         }
 
         [Fact]

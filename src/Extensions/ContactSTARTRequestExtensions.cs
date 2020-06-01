@@ -12,7 +12,7 @@ namespace contact_start_service.Extensions
         {
             var description = new DescriptionBuilder();
 
-            if (request.RefererPerson != null)
+            if (request.RefererPerson != null && !request.IsAboutSelf)
                 description
                     .Add("(Lagan) Referer", new[] { request.RefererPerson.FirstName, request.RefererPerson.LastName })
                     .Add("Connection to the Referee", request.RefererPerson.ConnectionAbout)
@@ -22,10 +22,13 @@ namespace contact_start_service.Extensions
             description
                 .Add("Client")
                 .Add("Name", new[] { request.RefereePerson.FirstName, request.RefereePerson.LastName })
-                .Add("Tel", request.RefereePerson.PhoneNumber)
-                .Add("Call Time", request.RefereePerson.TimeSlot)
                 .Add("Email", request.RefereePerson.EmailAddress)
                 .Add("Date of Birth", request.RefereePerson.DateOfBirth.ToShortDateString());
+
+            if(!string.IsNullOrEmpty(request.RefereePerson.PhoneNumber))
+                description
+                    .Add("Tel", request.RefereePerson.PhoneNumber)
+                    .Add("Call Time", request.RefereePerson.TimeSlot);
 
             if (request.RefereePerson.Address.IsAutomaticallyFound)
                 description.Add("Address", request.RefereePerson.Address.SelectedAddress);
