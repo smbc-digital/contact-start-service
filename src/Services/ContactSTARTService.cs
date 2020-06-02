@@ -37,7 +37,7 @@ namespace contact_start_service.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"ContactSTARTService.CreateCase: the status code {response.StatusCode} indicates something has gone wrong when attempting to create a case within verint-service.");
 
-            if(request.IsAboutSelf && !string.IsNullOrEmpty(request.RefereePerson.EmailAddress))
+            if (request.IsAboutSelf && !string.IsNullOrEmpty(request.RefereePerson.EmailAddress))
                 _ = mailingServiceGateway.Send(new Mail
                 {
                     Template = EMailTemplate.ContactStartRequest,
