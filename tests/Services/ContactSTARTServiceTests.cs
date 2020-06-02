@@ -249,7 +249,7 @@ namespace contact_start_service_tests.Services
             Assert.NotNull(caseRequest);
             Assert.NotNull(caseRequest.Description);
 
-            Assert.Contains($"(Lagan) Referer: {request.RefererPerson.FirstName} {request.RefererPerson.LastName}", caseRequest.Description);
+            Assert.Contains($"(Lagan) Referrer: {request.RefererPerson.FirstName} {request.RefererPerson.LastName}", caseRequest.Description);
             Assert.Contains($"Connection to the Referee: {request.RefererPerson.ConnectionAbout}", caseRequest.Description);
             Assert.Contains($"Contact number: {request.RefererPerson.PhoneNumber}", caseRequest.Description);
         }

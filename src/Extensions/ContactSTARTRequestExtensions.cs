@@ -14,7 +14,7 @@ namespace contact_start_service.Extensions
 
             if (request.RefererPerson != null && !request.IsAboutSelf)
                 description
-                    .Add("(Lagan) Referer", new[] { request.RefererPerson.FirstName, request.RefererPerson.LastName })
+                    .Add("(Lagan) Referrer", new[] { request.RefererPerson.FirstName, request.RefererPerson.LastName })
                     .Add("Connection to the Referee", request.RefererPerson.ConnectionAbout)
                     .Add("Contact number", request.RefererPerson.PhoneNumber)
                     .Add(string.Empty);
@@ -22,8 +22,10 @@ namespace contact_start_service.Extensions
             description
                 .Add("Client")
                 .Add("Name", new[] { request.RefereePerson.FirstName, request.RefereePerson.LastName })
-                .Add("Email", request.RefereePerson.EmailAddress)
                 .Add("Date of Birth", request.RefereePerson.DateOfBirth.ToShortDateString());
+
+            if (!string.IsNullOrEmpty(request.RefereePerson.EmailAddress))
+                description.Add("Email", request.RefereePerson.EmailAddress);
 
             if(!string.IsNullOrEmpty(request.RefereePerson.PhoneNumber))
                 description
@@ -39,9 +41,10 @@ namespace contact_start_service.Extensions
                     request.RefereePerson.Address.Town,
                     request.RefereePerson.Address.Postcode }, ", ");
 
-            description
-                .Add("Primary concern", request.AreaOfConcern)
-                .Add("Details", request.MoreInfomation);
+            description.Add("Primary concern", request.AreaOfConcern);
+
+            if(!string.IsNullOrEmpty(request.MoreInfomation))
+                description.Add("Details", request.MoreInfomation);
 
             return new Case
             {
