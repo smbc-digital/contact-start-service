@@ -52,6 +52,10 @@ namespace contact_start_service.Extensions
                 EventCode = eventCode,
                 AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street,
                 RaisedByBehaviour = RaisedByBehaviourEnum.Individual,
+                Street = new Street
+                {
+                    Reference = request.RefereePerson.Address.PlaceRef
+                },
                 Customer = new Customer
                 {
                     Forename = request.RefereePerson.FirstName,
