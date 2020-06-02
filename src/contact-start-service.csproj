@@ -28,4 +28,8 @@
   <ItemGroup>
     <None Include="License.txt" Pack="true" PackagePath="$(PackageLicenseFile)" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Config\Secrets\" />
+  </ItemGroup>
 </Project>
