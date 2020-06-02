@@ -50,7 +50,7 @@ namespace contact_start_service.Extensions
             {
                 Classification = $"Public Health > START > {request.AreaOfConcern.Trim()}",
                 EventCode = eventCode,
-                AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Individual,
+                AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street,
                 RaisedByBehaviour = RaisedByBehaviourEnum.Individual,
                 Customer = new Customer
                 {
