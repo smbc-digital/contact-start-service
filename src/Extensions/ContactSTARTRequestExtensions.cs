@@ -48,6 +48,7 @@ namespace contact_start_service.Extensions
 
             return new Case
             {
+                CaseTitle = request.AreaOfConcern.Trim(),
                 Classification = $"Public Health > START > {request.AreaOfConcern.Trim()}",
                 EventCode = eventCode,
                 AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Individual,
