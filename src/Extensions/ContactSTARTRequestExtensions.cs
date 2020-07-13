@@ -58,7 +58,7 @@ namespace contact_start_service.Extensions
                     Forename = request.RefereePerson.FirstName,
                     Surname = request.RefereePerson.LastName,
                     Email = request.RefereePerson.EmailAddress,
-                    Mobile = request.RefereePerson.PhoneNumber,
+                    Telephone = request.RefereePerson.PhoneNumber,
                     DateOfBirth = request.RefereePerson.DateOfBirth,
                     Address = new Address
                     {
