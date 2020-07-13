@@ -171,7 +171,7 @@ namespace contact_start_service_tests.Services
             Assert.Equal(request.RefereePerson.FirstName, caseRequest.Customer.Forename);
             Assert.Equal(request.RefereePerson.LastName, caseRequest.Customer.Surname);
             Assert.Equal(request.RefereePerson.EmailAddress, caseRequest.Customer.Email);
-            Assert.Equal(request.RefereePerson.PhoneNumber, caseRequest.Customer.Mobile);
+            Assert.Equal(request.RefereePerson.PhoneNumber, caseRequest.Customer.Telephone);
             Assert.Equal(request.RefereePerson.DateOfBirth, caseRequest.Customer.DateOfBirth);
             Assert.Equal(request.RefereePerson.Address.AddressLine1, caseRequest.Customer.Address.AddressLine1);
             Assert.Equal(request.RefereePerson.Address.Postcode, caseRequest.Customer.Address.Postcode);
