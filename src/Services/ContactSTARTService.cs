@@ -35,7 +35,7 @@ namespace contact_start_service.Services
             var response = await verintServiceGateway.CreateCase(request.MapToCase(eventCode));
 
             if (!response.IsSuccessStatusCode)
-                throw new Exception($"ContactSTARTService.CreateCase: the status code {response.StatusCode} indicates something has gone wrong when attempting to create a case within verint-service.");
+                throw new Exception($"ContactSTARTService.CreateCase : the status code {response.StatusCode} indicates something has gone wrong when attempting to create a case within verint-service.");
 
             if (request.IsAboutSelf && !string.IsNullOrEmpty(request.RefereePerson.EmailAddress))
                 _ = mailingServiceGateway.Send(new Mail
