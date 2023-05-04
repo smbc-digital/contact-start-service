@@ -355,7 +355,7 @@ namespace contact_start_service_tests.Services
 
             var result = await Assert.ThrowsAsync<Exception>(async () => await _service.CreateCase(basicRequest));
 
-            Assert.Equal($"ContactSTARTService.CreateCase: the status code {HttpStatusCode.BadRequest} indicates something has gone wrong when attempting to create a case within verint-service.", result.Message);
+            Assert.Equal($"ContactSTARTService.CreateCase : the status code {HttpStatusCode.BadRequest} indicates something has gone wrong when attempting to create a case within verint-service.", result.Message);
         }
 
         [Fact]
