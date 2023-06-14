@@ -9,15 +9,24 @@ namespace contact_start_service.Utils.ServiceCollectionExtensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void RegisterServices(this IServiceCollection services)
+        public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddTransient<IContactSTARTService, ContactSTARTService>();
+
+            return services;
         }
 
         public static IServiceCollection AddGateways(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient<IVerintServiceGateway, VerintServiceGateway>(configuration);
             services.AddHttpClient<IMailingServiceGateway, MailingServiceGateway>(configuration);
+
+            return services;
+        }
+
+        public static IServiceCollection AddConfiguration(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<VerintConfiguration>(settings => configuration.GetSection("VerintConfiguration").Bind(settings));
 
             return services;
         }
@@ -46,16 +55,6 @@ namespace contact_start_service.Utils.ServiceCollectionExtensions
                     }
                 });
             });
-        }
-
-        public static void AddConfiguration(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.Configure<VerintConfiguration>(settings => configuration.GetSection("VerintConfiguration").Bind(settings));
-        }
-
-        public static void AddServices(this IServiceCollection services)
-        {
-            services.AddSingleton<IContactSTARTService, ContactSTARTService>();
         }
     }
 }
