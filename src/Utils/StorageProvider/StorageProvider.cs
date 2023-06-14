@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace contact_start_service.Utils.StorageProvider
@@ -13,7 +11,7 @@ namespace contact_start_service.Utils.StorageProvider
             switch (storageProviderConfiguration["Type"])
             {
                 case "Redis":
-                    services.AddStackExchangeRedisCache(options => 
+                    services.AddStackExchangeRedisCache(options =>
                     {
                         options.Configuration = storageProviderConfiguration["Address"] ?? "127.0.0.1";
                         options.InstanceName = storageProviderConfiguration["Name"] ?? Assembly.GetEntryAssembly()?.GetName().Name;

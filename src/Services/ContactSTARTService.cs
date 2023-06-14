@@ -3,12 +3,10 @@ using contact_start_service.Extensions;
 using contact_start_service.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using StockportGovUK.NetStandard.Gateways.MailingServiceGateway;
-using StockportGovUK.NetStandard.Gateways.VerintServiceGateway;
-using StockportGovUK.NetStandard.Models.Enums;
-using StockportGovUK.NetStandard.Models.Mail;
-using System;
-using System.Threading.Tasks;
+using StockportGovUK.NetStandard.Gateways.Enums;
+using StockportGovUK.NetStandard.Gateways.MailingService;
+using StockportGovUK.NetStandard.Gateways.Models.Mail;
+using StockportGovUK.NetStandard.Gateways.VerintService;
 
 namespace contact_start_service.Services
 {

@@ -2,7 +2,6 @@ using contact_start_service.Models;
 using contact_start_service.Services;
 using Microsoft.AspNetCore.Mvc;
 using StockportGovUK.AspNetCore.Attributes.TokenAuthentication;
-using System.Threading.Tasks;
 
 namespace contact_start_service.Controllers
 {

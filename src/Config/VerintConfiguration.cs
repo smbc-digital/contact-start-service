@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace contact_start_service.Config
+﻿namespace contact_start_service.Config
 {
     public class VerintConfiguration
     {

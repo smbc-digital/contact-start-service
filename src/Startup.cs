@@ -1,20 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using contact_start_service.Utils.HealthChecks;
 using contact_start_service.Utils.ServiceCollectionExtensions;
 using contact_start_service.Utils.StorageProvider;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using StockportGovUK.AspNetCore.Middleware;
 using StockportGovUK.AspNetCore.Availability;
 using StockportGovUK.AspNetCore.Availability.Middleware;
-using StockportGovUK.NetStandard.Gateways;
-using contact_start_service.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using contact_start_service.Config;
+using StockportGovUK.AspNetCore.Middleware;
 
 namespace contact_start_service
 {
@@ -30,15 +21,20 @@ namespace contact_start_service
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                .AddControllers()
+                .AddNewtonsoftJson();
+
             services.AddStorageProvider(Configuration);
-            services.AddResilientHttpClients<IGateway, Gateway>(Configuration);
-            services.AddConfiguration(Configuration);
-            services.AddServices();
+
+            services.AddGateways(Configuration);
+            services.RegisterServices();
             services.AddAvailability();
             services.AddSwagger();
 
-            services.AddHealthChecks()
-                    .AddCheck<TestHealthCheck>("TestHealthCheck");
+            services
+                .AddHealthChecks()
+                .AddCheck<TestHealthCheck>("TestHealthCheck");
 
             services
                 .AddMvc()
@@ -66,7 +62,7 @@ namespace contact_start_service
 
             app.UseMiddleware<Availability>();
             app.UseMiddleware<ApiExceptionHandling>();
-            
+
             app.UseHealthChecks("/healthcheck", HealthCheckConfig.Options);
 
             app.UseSwagger();

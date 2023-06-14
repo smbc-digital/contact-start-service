@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Caching.Distributed;
 
 namespace contact_start_service.Utils.StorageProvider
 {
@@ -15,7 +12,7 @@ namespace contact_start_service.Utils.StorageProvider
 
         public CacheProvider(IDistributedCache cacheProvider, IConfiguration configuration)
         {
-            _allowCaching = configuration.GetSection("StorageProvider")["Type"] !=  "None";
+            _allowCaching = configuration.GetSection("StorageProvider")["Type"] != "None";
             _defaultTimeout = configuration.GetValue<double>("StorageProvider:Timeout") != 0
                 ? configuration.GetValue<double>("StorageProvider:Timeout")
                 : 20;
