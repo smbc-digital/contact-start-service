@@ -41,7 +41,7 @@
 - [License](#license)
 
 ## Requirements
-- dotnet core 3.1
+- dotnet 6.0
 - editor of your choice
 - gpg key added to accepted contributors
 
