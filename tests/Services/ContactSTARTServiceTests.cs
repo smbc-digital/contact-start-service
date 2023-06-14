@@ -1,20 +1,21 @@
-﻿using contact_start_service.Config;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using contact_start_service.Config;
 using contact_start_service.Models;
 using contact_start_service.Services;
 using Microsoft.Extensions.Options;
 using Moq;
-using StockportGovUK.NetStandard.Gateways.MailingServiceGateway;
+using StockportGovUK.NetStandard.Gateways.Enums;
+using StockportGovUK.NetStandard.Gateways.MailingService;
+using StockportGovUK.NetStandard.Gateways.Models.Mail;
+using StockportGovUK.NetStandard.Gateways.Models.Verint;
 using StockportGovUK.NetStandard.Gateways.Response;
-using StockportGovUK.NetStandard.Gateways.VerintServiceGateway;
-using StockportGovUK.NetStandard.Models.Enums;
-using StockportGovUK.NetStandard.Models.Mail;
-using StockportGovUK.NetStandard.Models.Verint;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+using StockportGovUK.NetStandard.Gateways.VerintService;
 using Xunit;
-using Address = StockportGovUK.NetStandard.Models.Addresses.Address;
+
+using Address = StockportGovUK.NetStandard.Gateways.Models.Addresses.Address;
 
 namespace contact_start_service_tests.Services
 {

@@ -1,14 +1,27 @@
-﻿using System.Collections.Generic;
-using contact_start_service.Config;
+﻿using contact_start_service.Config;
 using contact_start_service.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using StockportGovUK.NetStandard.Gateways.Extensions;
+using StockportGovUK.NetStandard.Gateways.MailingService;
+using StockportGovUK.NetStandard.Gateways.VerintService;
 
 namespace contact_start_service.Utils.ServiceCollectionExtensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static void RegisterServices(this IServiceCollection services)
+        {
+            services.AddTransient<IContactSTARTService, ContactSTARTService>();
+        }
+
+        public static IServiceCollection AddGateways(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient<IVerintServiceGateway, VerintServiceGateway>(configuration);
+            services.AddHttpClient<IMailingServiceGateway, MailingServiceGateway>(configuration);
+
+            return services;
+        }
+
         public static void AddSwagger(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>

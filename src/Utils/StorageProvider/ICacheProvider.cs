@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
 
 namespace contact_start_service.Utils.StorageProvider
 {

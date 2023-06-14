@@ -5,6 +5,7 @@ coverage.info
 # Edit at https://www.gitignore.io/?templates=visualstudio,visualstudiocode
 
 ### VisualStudioCode ###
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

@@ -1,8 +1,6 @@
-using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
 
@@ -35,41 +33,45 @@ namespace contact_start_service.Utils.HealthChecks
         private static string ProcessUnhealthy(HealthReport report)
         {
             return JsonConvert.SerializeObject(new
+            {
+                application = new
                 {
-                    application = new {
-                        name = Assembly.Name,
-                        version = Assembly.Version.ToString(),
-                        status = report.Status.ToString(),
-                    },
-                    checks = report.Entries.Select(e =>
-                        new {
-                            description = e.Key,
-                            status = e.Value.Status.ToString(),
-                            exception = e.Value.Exception?.Message,
-                            data = e.Value.Data.Select(_ => $"{_.Key}: {_.Value}"),
-                            responseTime = e.Value.Duration.TotalMilliseconds
-                        }),
-                    totalResponseTime = report.TotalDuration.TotalMilliseconds
-                });
+                    name = Assembly.Name,
+                    version = Assembly.Version.ToString(),
+                    status = report.Status.ToString(),
+                },
+                checks = report.Entries.Select(e =>
+                    new
+                    {
+                        description = e.Key,
+                        status = e.Value.Status.ToString(),
+                        exception = e.Value.Exception?.Message,
+                        data = e.Value.Data.Select(_ => $"{_.Key}: {_.Value}"),
+                        responseTime = e.Value.Duration.TotalMilliseconds
+                    }),
+                totalResponseTime = report.TotalDuration.TotalMilliseconds
+            });
         }
 
         private static string ProcessHealthy(HealthReport report)
         {
             return JsonConvert.SerializeObject(new
+            {
+                application = new
                 {
-                    application = new {
-                        name = Assembly.Name,
-                        version = Assembly.Version.ToString(),
-                        status = report.Status.ToString(),
-                    },
-                    checks = report.Entries.Select(e =>
-                        new {
-                            description = e.Key,
-                            status = e.Value.Status.ToString(),
-                            responseTime = e.Value.Duration.TotalMilliseconds
-                        }),
-                    totalResponseTime = report.TotalDuration.TotalMilliseconds
-                });
+                    name = Assembly.Name,
+                    version = Assembly.Version.ToString(),
+                    status = report.Status.ToString(),
+                },
+                checks = report.Entries.Select(e =>
+                    new
+                    {
+                        description = e.Key,
+                        status = e.Value.Status.ToString(),
+                        responseTime = e.Value.Duration.TotalMilliseconds
+                    }),
+                totalResponseTime = report.TotalDuration.TotalMilliseconds
+            });
         }
     }
 }

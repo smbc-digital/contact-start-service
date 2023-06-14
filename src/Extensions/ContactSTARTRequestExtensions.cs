@@ -1,7 +1,7 @@
-﻿using contact_start_service.Builders;
+﻿using System.Diagnostics.CodeAnalysis;
+using contact_start_service.Builders;
 using contact_start_service.Models;
-using StockportGovUK.NetStandard.Models.Verint;
-using System.Diagnostics.CodeAnalysis;
+using StockportGovUK.NetStandard.Gateways.Models.Verint;
 
 namespace contact_start_service.Extensions
 {
@@ -27,7 +27,7 @@ namespace contact_start_service.Extensions
             if (!string.IsNullOrEmpty(request.RefereePerson.EmailAddress))
                 description.Add("Email", request.RefereePerson.EmailAddress);
 
-            if(!string.IsNullOrEmpty(request.RefereePerson.PhoneNumber))
+            if (!string.IsNullOrEmpty(request.RefereePerson.PhoneNumber))
                 description
                     .Add("Tel", request.RefereePerson.PhoneNumber)
                     .Add("Call Time", request.RefereePerson.TimeSlot);
@@ -43,7 +43,7 @@ namespace contact_start_service.Extensions
 
             description.Add("Primary concern", request.AreaOfConcern);
 
-            if(!string.IsNullOrEmpty(request.MoreInfomation))
+            if (!string.IsNullOrEmpty(request.MoreInfomation))
                 description.Add("Details", request.MoreInfomation);
 
             return new Case

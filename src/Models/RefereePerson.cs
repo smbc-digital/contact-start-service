@@ -1,5 +1,4 @@
-﻿using StockportGovUK.NetStandard.Models.Addresses;
-using System;
+﻿using StockportGovUK.NetStandard.Gateways.Models.Addresses;
 
 namespace contact_start_service.Models
 {
