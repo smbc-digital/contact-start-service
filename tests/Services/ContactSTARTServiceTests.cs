@@ -11,6 +11,7 @@ using StockportGovUK.NetStandard.Gateways.Enums;
 using StockportGovUK.NetStandard.Gateways.MailingService;
 using StockportGovUK.NetStandard.Gateways.Models.Mail;
 using StockportGovUK.NetStandard.Gateways.Models.Verint;
+using StockportGovUK.NetStandard.Gateways.Models.Verint.VerintOnlineForm;
 using StockportGovUK.NetStandard.Gateways.Response;
 using StockportGovUK.NetStandard.Gateways.VerintService;
 using Xunit;
@@ -22,8 +23,8 @@ namespace contact_start_service_tests.Services
     public class ContactSTARTServiceTests
     {
         private readonly ContactSTARTService _service;
-        private Mock<IVerintServiceGateway> _mockVerintService = new Mock<IVerintServiceGateway>();
-        private Mock<IMailingServiceGateway> _mockMailingService = new Mock<IMailingServiceGateway>();
+        private readonly Mock<IVerintServiceGateway> _mockVerintService = new();
+        private readonly Mock<IMailingServiceGateway> _mockMailingService = new();
 
         public ContactSTARTServiceTests()
         {
@@ -53,16 +54,20 @@ namespace contact_start_service_tests.Services
         public async Task CreateCase_ShouldCallVerintGateway()
         {
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
-                    IsSuccessStatusCode = true
+                    IsSuccessStatusCode = true,
+                    ResponseContent = new VerintOnlineFormResponse
+                    {
+                        VerintCaseReference = "123456"
+                    }
                 });
 
             await _service.CreateCase(basicRequest);
 
             _mockVerintService
-                .Verify(_ => _.CreateCase(It.IsAny<Case>()), Times.Once);
+                .Verify(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()), Times.Once);
         }
 
         [Theory]
@@ -82,21 +87,25 @@ namespace contact_start_service_tests.Services
             var request = basicRequest;
             request.AreaOfConcern = areaOfConcern;
 
-            Case caseRequest = null;
+            VerintOnlineFormRequest caseRequest = null;
 
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .Callback<Case>(_ => caseRequest = _)
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .Callback<VerintOnlineFormRequest>(_ => caseRequest = _)
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
-                    IsSuccessStatusCode = true
+                    IsSuccessStatusCode = true,
+                    ResponseContent = new VerintOnlineFormResponse
+                    {
+                        VerintCaseReference = "123456"
+                    }
                 });
 
             await _service.CreateCase(request);
 
             Assert.NotNull(caseRequest);
-            Assert.Equal(classification, caseRequest.Classification);
-            Assert.Equal(classificationCode, caseRequest.EventCode);
+            Assert.Equal(classification, caseRequest.VerintCase.Classification);
+            Assert.Equal(classificationCode, caseRequest.VerintCase.EventCode);
         }
 
 
@@ -107,10 +116,6 @@ namespace contact_start_service_tests.Services
             {
                 AreaOfConcern = "NoMatchExample"
             };
-
-            _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .ReturnsAsync(new HttpResponse<string>());
 
             var result = await Assert.ThrowsAsync<Exception>(async () =>
             {
@@ -144,38 +149,42 @@ namespace contact_start_service_tests.Services
                 }
             };
 
-            Case caseRequest = null;
+            VerintOnlineFormRequest caseRequest = null;
 
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .Callback<Case>(_ => caseRequest = _)
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .Callback<VerintOnlineFormRequest>(_ => caseRequest = _)
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
-                    IsSuccessStatusCode = true
+                    IsSuccessStatusCode = true,
+                    ResponseContent = new VerintOnlineFormResponse
+                    {
+                        VerintCaseReference = "123456"
+                    }
                 });
 
             await _service.CreateCase(request);
 
             Assert.NotNull(caseRequest);
-            Assert.NotNull(caseRequest.Customer);
-            Assert.NotNull(caseRequest.Description);
+            Assert.NotNull(caseRequest.VerintCase.Customer);
+            Assert.NotNull(caseRequest.VerintCase.Description);
 
             // checking the description field contains the user who needs assistance from the START team
-            Assert.Contains($"Name: {request.RefereePerson.FirstName} {request.RefereePerson.LastName}", caseRequest.Description);
-            Assert.Contains($"Tel: {request.RefereePerson.PhoneNumber}", caseRequest.Description);
-            Assert.Contains($"Call Time: {request.RefereePerson.TimeSlot}", caseRequest.Description);
-            Assert.Contains($"Email: {request.RefereePerson.EmailAddress}", caseRequest.Description);
-            Assert.Contains($"Date of Birth: {request.RefereePerson.DateOfBirth.ToShortDateString()}", caseRequest.Description);
-            Assert.Contains($"Address: {request.RefereePerson.Address.AddressLine1}, {request.RefereePerson.Address.Postcode}", caseRequest.Description);
+            Assert.Contains($"Name: {request.RefereePerson.FirstName} {request.RefereePerson.LastName}", caseRequest.VerintCase.Description);
+            Assert.Contains($"Tel: {request.RefereePerson.PhoneNumber}", caseRequest.VerintCase.Description);
+            Assert.Contains($"Call Time: {request.RefereePerson.TimeSlot}", caseRequest.VerintCase.Description);
+            Assert.Contains($"Email: {request.RefereePerson.EmailAddress}", caseRequest.VerintCase.Description);
+            Assert.Contains($"Date of Birth: {request.RefereePerson.DateOfBirth.ToShortDateString()}", caseRequest.VerintCase.Description);
+            Assert.Contains($"Address: {request.RefereePerson.Address.AddressLine1}, {request.RefereePerson.Address.Postcode}", caseRequest.VerintCase.Description);
 
             // checking the user who needs assistent exists in the Customer object used for matching
-            Assert.Equal(request.RefereePerson.FirstName, caseRequest.Customer.Forename);
-            Assert.Equal(request.RefereePerson.LastName, caseRequest.Customer.Surname);
-            Assert.Equal(request.RefereePerson.EmailAddress, caseRequest.Customer.Email);
-            Assert.Equal(request.RefereePerson.PhoneNumber, caseRequest.Customer.Telephone);
-            Assert.Equal(request.RefereePerson.DateOfBirth, caseRequest.Customer.DateOfBirth);
-            Assert.Equal(request.RefereePerson.Address.AddressLine1, caseRequest.Customer.Address.AddressLine1);
-            Assert.Equal(request.RefereePerson.Address.Postcode, caseRequest.Customer.Address.Postcode);
+            Assert.Equal(request.RefereePerson.FirstName, caseRequest.VerintCase.Customer.Forename);
+            Assert.Equal(request.RefereePerson.LastName, caseRequest.VerintCase.Customer.Surname);
+            Assert.Equal(request.RefereePerson.EmailAddress, caseRequest.VerintCase.Customer.Email);
+            Assert.Equal(request.RefereePerson.PhoneNumber, caseRequest.VerintCase.Customer.Telephone);
+            Assert.Equal(request.RefereePerson.DateOfBirth, caseRequest.VerintCase.Customer.DateOfBirth);
+            Assert.Equal(request.RefereePerson.Address.AddressLine1, caseRequest.VerintCase.Customer.Address.AddressLine1);
+            Assert.Equal(request.RefereePerson.Address.Postcode, caseRequest.VerintCase.Customer.Address.Postcode);
         }
 
         [Fact]
@@ -193,23 +202,27 @@ namespace contact_start_service_tests.Services
                 MoreInfomation = "test more infomation"
             };
 
-            Case caseRequest = null;
+            VerintOnlineFormRequest caseRequest = null;
 
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .Callback<Case>(_ => caseRequest = _)
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .Callback<VerintOnlineFormRequest>(_ => caseRequest = _)
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
-                    IsSuccessStatusCode = true
+                    IsSuccessStatusCode = true,
+                    ResponseContent = new VerintOnlineFormResponse
+                    {
+                        VerintCaseReference = "123456"
+                    }
                 });
 
             await _service.CreateCase(request);
 
             Assert.NotNull(caseRequest);
-            Assert.NotNull(caseRequest.Description);
+            Assert.NotNull(caseRequest.VerintCase.Description);
 
-            Assert.Contains($"Details: {request.MoreInfomation}", caseRequest.Description);
-            Assert.Contains($"Primary concern: {request.AreaOfConcern}", caseRequest.Description);
+            Assert.Contains($"Details: {request.MoreInfomation}", caseRequest.VerintCase.Description);
+            Assert.Contains($"Primary concern: {request.AreaOfConcern}", caseRequest.VerintCase.Description);
         }
 
         [Fact]
@@ -235,24 +248,28 @@ namespace contact_start_service_tests.Services
                 MoreInfomation = "test more infomation"
             };
 
-            Case caseRequest = null;
+            VerintOnlineFormRequest caseRequest = null;
 
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .Callback<Case>(_ => caseRequest = _)
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .Callback<VerintOnlineFormRequest>(_ => caseRequest = _)
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
-                    IsSuccessStatusCode = true
+                    IsSuccessStatusCode = true,
+                    ResponseContent = new VerintOnlineFormResponse
+                    {
+                        VerintCaseReference = "123456"
+                    }
                 });
 
             await _service.CreateCase(request);
 
             Assert.NotNull(caseRequest);
-            Assert.NotNull(caseRequest.Description);
+            Assert.NotNull(caseRequest.VerintCase.Description);
 
-            Assert.Contains($"(Lagan) Referrer: {request.RefererPerson.FirstName} {request.RefererPerson.LastName}", caseRequest.Description);
-            Assert.Contains($"Connection to the Referee: {request.RefererPerson.ConnectionAbout}", caseRequest.Description);
-            Assert.Contains($"Contact number: {request.RefererPerson.PhoneNumber}", caseRequest.Description);
+            Assert.Contains($"(Lagan) Referrer: {request.RefererPerson.FirstName} {request.RefererPerson.LastName}", caseRequest.VerintCase.Description);
+            Assert.Contains($"Connection to the Referee: {request.RefererPerson.ConnectionAbout}", caseRequest.VerintCase.Description);
+            Assert.Contains($"Contact number: {request.RefererPerson.PhoneNumber}", caseRequest.VerintCase.Description);
         }
 
         [Fact]
@@ -270,23 +287,27 @@ namespace contact_start_service_tests.Services
                 MoreInfomation = "test more infomation"
             };
 
-            Case caseRequest = null;
+            VerintOnlineFormRequest caseRequest = null;
 
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .Callback<Case>(_ => caseRequest = _)
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .Callback<VerintOnlineFormRequest>(_ => caseRequest = _)
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
-                    IsSuccessStatusCode = true
+                    IsSuccessStatusCode = true,
+                    ResponseContent = new VerintOnlineFormResponse
+                    {
+                        VerintCaseReference = "123456"
+                    }
                 });
 
             await _service.CreateCase(request);
 
             Assert.NotNull(caseRequest);
-            Assert.NotNull(caseRequest.Description);
+            Assert.NotNull(caseRequest.VerintCase.Description);
 
-            Assert.DoesNotContain($"Tel", caseRequest.Description);
-            Assert.DoesNotContain($"Call Time", caseRequest.Description);
+            Assert.DoesNotContain($"Tel", caseRequest.VerintCase.Description);
+            Assert.DoesNotContain($"Call Time", caseRequest.VerintCase.Description);
         }
 
         [Fact]
@@ -303,52 +324,57 @@ namespace contact_start_service_tests.Services
                     PhoneNumber = "+440000000000",
                     TimeSlot = "10:00 - 17:00"
                 },
-                MoreInfomation = "test more infomation"
+                MoreInfomation = "test more information"
             };
 
-            Case caseRequest = null;
+            VerintOnlineFormRequest caseRequest = null;
 
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .Callback<Case>(_ => caseRequest = _)
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .Callback<VerintOnlineFormRequest>(_ => caseRequest = _)
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
-                    IsSuccessStatusCode = true
+                    IsSuccessStatusCode = true,
+                    ResponseContent = new VerintOnlineFormResponse
+                    {
+                        VerintCaseReference = "123456"
+                    }
                 });
 
             await _service.CreateCase(request);
 
             Assert.NotNull(caseRequest);
-            Assert.NotNull(caseRequest.Description);
+            Assert.NotNull(caseRequest.VerintCase.Description);
 
-            Assert.Contains($"Tel: {request.RefereePerson.PhoneNumber}", caseRequest.Description);
-            Assert.Contains($"Call Time: {request.RefereePerson.TimeSlot}", caseRequest.Description);
+            Assert.Contains($"Tel: {request.RefereePerson.PhoneNumber}", caseRequest.VerintCase.Description);
+            Assert.Contains($"Call Time: {request.RefereePerson.TimeSlot}", caseRequest.VerintCase.Description);
         }
 
         [Fact]
         public async Task CreateCase_ShouldReturnString()
         {
-            var expectedResponse = "test";
-
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
                     IsSuccessStatusCode = true,
-                    ResponseContent = expectedResponse
+                    ResponseContent = new VerintOnlineFormResponse
+                    {
+                        VerintCaseReference = "123456"
+                    }
                 });
 
             var result = await _service.CreateCase(basicRequest);
 
-            Assert.Equal(expectedResponse, result);
+            Assert.Equal("123456", result);
         }
 
         [Fact]
         public async Task CreateCase_ShouldThrowVerintStatusCodeException()
         {
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
                     IsSuccessStatusCode = false,
                     StatusCode = HttpStatusCode.BadRequest
@@ -379,11 +405,14 @@ namespace contact_start_service_tests.Services
             var caseRef = "000000000";
 
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
                     IsSuccessStatusCode = true,
-                    ResponseContent = caseRef
+                    ResponseContent = new VerintOnlineFormResponse
+                    {
+                        VerintCaseReference = caseRef
+                    }
                 });
 
             Mail mailModel = null;
@@ -420,10 +449,14 @@ namespace contact_start_service_tests.Services
             };
 
             _mockVerintService
-                .Setup(_ => _.CreateCase(It.IsAny<Case>()))
-                .ReturnsAsync(new HttpResponse<string>
+                .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
+                .ReturnsAsync(new HttpResponse<VerintOnlineFormResponse>
                 {
-                    IsSuccessStatusCode = true
+                    IsSuccessStatusCode = true,
+                    ResponseContent = new VerintOnlineFormResponse
+                    {
+                        VerintCaseReference = "123456"
+                    }
                 });
 
             await _service.CreateCase(request);
