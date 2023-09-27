@@ -12,10 +12,8 @@ namespace contact_start_service.Controllers
     public class HomeController : ControllerBase
     {
         private IContactSTARTService contactSTARTService;
-        public HomeController(IContactSTARTService _contactSTARTService)
-        {
+        public HomeController(IContactSTARTService _contactSTARTService) =>
             contactSTARTService = _contactSTARTService;
-        }
 
         [HttpPost]
         public async Task<IActionResult> Post(ContactSTARTRequest model)
